@@ -100,7 +100,9 @@ pub fn parse_operand(s: &str) -> Operand {
         _ => (true, &rest[..]),
     };
 
-    let data = number_str.parse::<isize>().ok().unwrap();
+    let sign2 = if sign { 1 } else { -1 };
+
+    let data = number_str.parse::<isize>().ok().unwrap() * sign2;
 
     Operand {
         addressing_mode,
