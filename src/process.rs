@@ -11,8 +11,7 @@ pub struct Players {
     pub curr_player: usize,
 }
 
-impl Players {
-}
+impl Players {}
 
 pub struct Game {
     pub players: Players,
@@ -21,7 +20,6 @@ pub struct Game {
 }
 
 impl Game {
-
     pub fn new(num_players: usize, coresize: isize) -> Self {
         Game {
             players: Players {
@@ -29,13 +27,12 @@ impl Game {
                 curr_player: 0,
             },
             // memory: vec![data_zero() ; num_players * 2000],
-            memory: vec![todo!() ; num_players * 2000],
-            coresize
+            memory: vec![todo!(); num_players * 2000],
+            coresize,
         }
     }
 
-    pub fn start_game(&mut self, codes: Vec<Vec<Instruction>>) { 
-        
+    pub fn start_game(&mut self, codes: Vec<Vec<Instruction>>) {
         // initialize all player states, copy into memory space
         // add a process to prp
 
@@ -59,23 +56,20 @@ impl Game {
             let mut prev_pos = locations[locations.len() - 1];
             prev_pos += positions[i] + random_vals[i];
             locations.push(prev_pos);
-
         }
-        
+
         let mut players = vec![];
         for i in 0..codes.len() {
-
             for j in 0..(codes[i].len()) {
                 self.memory[locations[positions[i]] + j] = codes[i][j];
             }
 
             let new_player = UserState {
-                processes: vec![locations[positions[i]]], 
+                processes: vec![locations[positions[i]]],
                 curr_process: 0,
             };
 
             players.push(new_player);
-            
         }
     }
 }

@@ -1,10 +1,11 @@
 mod run_instruction;
 mod instruction;
-mod process;
 mod parser;
+mod process;
 
 use eframe::egui;
 use egui::{Color32, Pos2, Rect, Ui};
+use parser::parse_instruction;
 
 pub struct Board {
     // true = white, false = black
@@ -14,7 +15,7 @@ pub struct Board {
 impl Board {
     pub fn draw_board(&self, ui: &mut Ui) {
         let size = ui.available_size();
-        
+
         let n = 100;
 
         let (tile_size, offset) = if size.x > size.y {
@@ -59,22 +60,25 @@ impl Board {
     }
 }
 
-fn main() -> eframe::Result {
-    env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
-    let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
-        ..Default::default()
-    };
-    eframe::run_native(
-        "My egui App",
-        options,
-        Box::new(|cc| {
-            // This gives us image support:
-            // egui_extras::install_image_loaders(&cc.egui_ctx);
+fn main() {
+    // -> eframe::Result {
 
-            Ok(Box::<MyApp>::default())
-        }),
-    )
+    println!("{:?}", parse_instruction("mov 0 1"));
+    //     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
+    //     let options = eframe::NativeOptions {
+    //         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
+    //         ..Default::default()
+    //     };
+    //     eframe::run_native(
+    //         "My egui App",
+    //         options,
+    //         Box::new(|cc| {
+    //             // This gives us image support:
+    //             // egui_extras::install_image_loaders(&cc.egui_ctx);
+    //
+    //             Ok(Box::<MyApp>::default())
+    //         }),
+    //     )
 }
 
 struct MyApp {

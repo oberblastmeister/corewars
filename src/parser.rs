@@ -140,39 +140,40 @@ pub fn parse_instruction(line: &str) -> Option<Instruction> {
 
     let op = parse_optcode(opsplit[0]);
 
-    let mut modifier: Modifier = todo!();
-
-    if opsplit.len() == 2 {
-        modifier = parse_mod(opsplit[1]);
+    let modifier = if opsplit.len() == 2 {
+        parse_mod(opsplit[1])
     } else {
         match op {
-            Op::Dat => modifier = Modifier::F,
-            Op::Mov => modifier = Modifier::I,
-            Op::Add => modifier = Modifier::AB,
-            Op::Sub => modifier = Modifier::AB,
-            Op::Mul => modifier = Modifier::AB,
-            Op::Div => modifier = Modifier::AB,
-            Op::Mod => modifier = Modifier::AB,
-            Op::Jmp => modifier = Modifier::B,
-            Op::Jmz => modifier = Modifier::B,
-            Op::Jmn => modifier = Modifier::B,
-            Op::Djn => modifier = Modifier::B,
-            Op::Spl => modifier = Modifier::B,
+            Op::Dat => Modifier::F,
+            Op::Mov => Modifier::I,
+            Op::Add => Modifier::AB,
+            Op::Sub => Modifier::AB,
+            Op::Mul => Modifier::AB,
+            Op::Div => Modifier::AB,
+            Op::Mod => Modifier::AB,
+            Op::Jmp => Modifier::B,
+            Op::Jmz => Modifier::B,
+            Op::Jmn => Modifier::B,
+            Op::Djn => Modifier::B,
+            Op::Spl => Modifier::B,
             Op::Cmp => {
                 // Handle CMP
+                todo!()
             }
-            Op::Seq => modifier = Modifier::I,
-            Op::Sne => modifier = Modifier::I,
-            Op::Slt => modifier = Modifier::B,
+            Op::Seq => Modifier::I,
+            Op::Sne => Modifier::I,
+            Op::Slt => Modifier::B,
             Op::Ldp => {
                 // Handle LDP
+                todo!()
             }
             Op::Stp => {
                 // Handle STP
+                todo!()
             }
-            Op::Nop => modifier = Modifier::F,
+            Op::Nop => Modifier::F,
         }
-    }
+    };
 
     // parse operands a, b
     let a = parse_operand(parts[1]);
