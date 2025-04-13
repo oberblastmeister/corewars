@@ -1,7 +1,7 @@
-mod run_instruction;
 mod instruction;
 mod parser;
 mod process;
+mod run_instruction;
 
 use eframe::egui;
 use egui::{Color32, Pos2, Rect, Ui};
@@ -63,7 +63,7 @@ impl Board {
 fn main() {
     // -> eframe::Result {
 
-    println!("{:?}", parse_instruction("mov 0 1"));
+    println!("{:?}", parse_instruction("jmp 0 <-1"));
     //     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     //     let options = eframe::NativeOptions {
     //         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),

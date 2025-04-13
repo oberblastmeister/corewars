@@ -104,7 +104,6 @@ pub fn parse_operand(s: &str) -> Operand {
 
     Operand {
         addressing_mode,
-        sign,
         data,
     }
 }
