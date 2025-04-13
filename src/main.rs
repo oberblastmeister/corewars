@@ -102,7 +102,7 @@ fn main() {
             let c1 = vec![parse_instruction("mov 0 1").unwrap()];
             let c0 = vec![parse_instruction("mov 0 1").unwrap()];
 
-            let mut game = Game::new(2, 100);
+            let mut game = Game::new(5, 100);
 
             game.start_game(vec![c0, c1, c2, c3, c4]);
 
@@ -120,7 +120,7 @@ impl eframe::App for Game {
 
             self.draw(ui);
         });
-        
+
         self.run_cycle();
     }
 }

@@ -65,7 +65,7 @@ impl Game {
 
         let mut gap = (5000 * codes.len()) - codes.iter().fold(0, |acc, x| acc + x.len());
         let mut random_vals = vec![];
-        for i in 0..codes.len() {
+        for _ in 0..codes.len() {
             let g = rng.random_range(0..gap);
             gap -= g;
             random_vals.push(g);
@@ -86,6 +86,7 @@ impl Game {
         let mut players = vec![];
         for i in 0..codes.len() {
             for j in 0..(codes[i].len()) {
+                println!("{:?}", locations[positions[i]]);
                 self.memory[locations[positions[i]] + j] = codes[i][j];
             }
 
