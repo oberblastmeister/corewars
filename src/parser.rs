@@ -1,10 +1,10 @@
 use crate::instruction::*;
+use std::fs::read_to_string;
 use std::{
     fs::File,
     io::{prelude::*, BufReader},
     path::Path,
 };
-use std::fs::read_to_string;
 
 pub fn parse_optcode(s: &str) -> Op {
     match s.to_uppercase().as_str() {
@@ -58,40 +58,28 @@ pub fn parse_operand(s: &str) -> Operand {
         '{' => (
             Indirect {
                 position: Position::A,
-                change: Some(IndirectModify {
-                    kind: IndirectModifyKind::Decrement,
-                    pre_post: PrePost::Pre,
-                }),
+                change: Some(IndirectModify::Decrement),
             },
             chars.collect(),
         ),
         '<' => (
             Indirect {
                 position: Position::B,
-                change: Some(IndirectModify {
-                    kind: IndirectModifyKind::Decrement,
-                    pre_post: PrePost::Pre,
-                }),
+                change: Some(IndirectModify::Decrement),
             },
             chars.collect(),
         ),
         '}' => (
             Indirect {
                 position: Position::A,
-                change: Some(IndirectModify {
-                    kind: IndirectModifyKind::Increment,
-                    pre_post: PrePost::Post,
-                }),
+                change: Some(IndirectModify::Increment),
             },
             chars.collect(),
         ),
         '>' => (
             Indirect {
                 position: Position::B,
-                change: Some(IndirectModify {
-                    kind: IndirectModifyKind::Increment,
-                    pre_post: PrePost::Post,
-                }),
+                change: Some(IndirectModify::Increment),
             },
             chars.collect(),
         ),
@@ -187,13 +175,11 @@ pub fn parse_instruction(line: &str) -> Option<Instruction> {
     return Some(Instruction { modifier, op, a, b });
 }
 
-
-pub fn parse_file(filename: &str) -> Vec<Instruction>{
-
+pub fn parse_file(filename: &str) -> Vec<Instruction> {
     let file = File::open(filename).expect("Failed to open file");
     let reader = BufReader::new(file);
 
-    let m:Vec<String> = reader
+    let m: Vec<String> = reader
         .lines()
         .map(|line| line.expect("Failed to read line"))
         .collect();
@@ -201,9 +187,7 @@ pub fn parse_file(filename: &str) -> Vec<Instruction>{
     let mut instructions = vec![];
     for line in m {
         match parse_instruction(line.as_str()) {
-            Some(x) => {
-                instructions.push(x)
-            },
+            Some(x) => instructions.push(x),
             None => {
                 return vec![];
             }
@@ -212,3 +196,4 @@ pub fn parse_file(filename: &str) -> Vec<Instruction>{
 
     return instructions;
 }
+

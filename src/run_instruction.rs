@@ -30,7 +30,7 @@ impl Game {
             } => {
                 let intermediate_instruction_index =
                     instruction_index.wrapping_add_signed(operand.data);
-                if change.pre_post == PrePost::Pre {
+                if change == IndirectModify::Decrement {
                     // self.memory[intermediate_instruction_index] += change.kind.to_offset();
                     todo!()
                 }
@@ -42,7 +42,7 @@ impl Game {
                 let result_instruction_index =
                     intermediate_instruction_index.wrapping_add_signed(result_instruction_offset);
                 let result_instruction = self.memory[result_instruction_index];
-                if change.pre_post == PrePost::Post {
+                if change == IndirectModify::Increment {
                     // self.memory[intermediate_instruction_index] += change.kind.to_offset();
                     todo!()
                 }
