@@ -6,6 +6,8 @@ mod run_instruction;
 use eframe::egui;
 use egui::{Color32, Pos2, Rect, Ui};
 use parser::parse_file;
+use parser::parse_instruction;
+use process::Game;
 
 pub struct Board {
     // true = white, false = black
@@ -64,9 +66,20 @@ fn main() {
     // -> eframe::Result {
 
     let result = parse_file("erm.s");
+
     for r in result {
-        println!("{:?}", r);
+        println!("{}", r);
     }
+
+    let c1 = vec![parse_instruction("jmp 0 <-1").unwrap()];
+    let c0 = vec![parse_instruction("mov 0 1").unwrap()];
+
+    let mut g = Game::new(2, 100);
+
+    g.start_game(vec![c0, c1]);
+
+    g.debug_print_memory();
+
     //     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     //     let options = eframe::NativeOptions {
     //         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),

@@ -31,6 +31,16 @@ impl Game {
         }
     }
 
+    pub fn debug_print_memory(&self) {
+        let zero = dat_zero();
+
+        for i in 0..self.memory.len() {
+            if self.memory[i] != zero {
+                println!("0x{:08x} : {}", i, self.memory[i]);
+            }
+        }
+    }
+
     pub fn start_game(&mut self, codes: Vec<Vec<Instruction>>) {
         // initialize all player states, copy into memory space
         // add a process to prp
