@@ -1,4 +1,4 @@
-use crate::instruction::{Instruction, Op};
+use crate::instruction::{dat_zero, Instruction, Op};
 use rand::{seq::SliceRandom, thread_rng, Rng};
 
 pub struct UserState {
@@ -26,8 +26,7 @@ impl Game {
                 players: vec![],
                 curr_player: 0,
             },
-            // memory: vec![data_zero() ; num_players * 2000],
-            memory: vec![todo!(); num_players * 2000],
+            memory: vec![dat_zero(); num_players * 2000],
             coresize,
         }
     }

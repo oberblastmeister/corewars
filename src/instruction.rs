@@ -57,7 +57,7 @@ pub enum Modifier {
     BA,
     F,
     X,
-    I
+    I,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -79,7 +79,6 @@ pub enum AddressingMode {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Operand {
     pub addressing_mode: AddressingMode,
-    pub sign: bool,
     pub data: isize,
 }
 
@@ -89,4 +88,19 @@ pub struct Instruction {
     pub op: Op,
     pub a: Operand,
     pub b: Operand,
+}
+
+pub fn dat_zero() -> Instruction {
+    Instruction {
+        modifier: Modifier::I,
+        op: Op::Dat,
+        a: Operand {
+            addressing_mode: AddressingMode::Immediate,
+            data: 0,
+        },
+        b: Operand {
+            addressing_mode: AddressingMode::Immediate,
+            data: 0,
+        },
+    }
 }
