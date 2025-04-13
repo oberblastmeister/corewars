@@ -13,20 +13,36 @@ pub struct Players {
 
 impl Players {}
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum VisualizationKind {
+    Execute,
+    Write,
+    Read,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Visualization {
+    player: usize,
+    kind: VisualizationKind,
+}
+
 pub struct Game {
     pub players: Players,
     pub memory: Vec<Instruction>,
+    pub visualization: Vec<Option<Visualization>>,
     pub coresize: isize,
 }
 
 impl Game {
     pub fn new(num_players: usize, coresize: isize) -> Self {
+        let mem_size = num_players * 5000;
         Game {
             players: Players {
                 players: vec![],
                 curr_player: 0,
             },
-            memory: vec![dat_zero(); num_players * 2000],
+            visualization: vec![None; mem_size],
+            memory: vec![dat_zero(); mem_size],
             coresize,
         }
     }
@@ -45,9 +61,9 @@ impl Game {
         // initialize all player states, copy into memory space
         // add a process to prp
 
-        let mut rng = thread_rng();
+        let mut rng = rand::rng();
 
-        let mut gap = (2000 * codes.len()) - codes.iter().fold(0, |acc, x| acc + x.len());
+        let mut gap = (5000 * codes.len()) - codes.iter().fold(0, |acc, x| acc + x.len());
         let mut random_vals = vec![];
         for i in 0..codes.len() {
             let g = rng.random_range(0..gap);
