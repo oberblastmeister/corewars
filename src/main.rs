@@ -1,4 +1,4 @@
-mod exec_instruction;
+mod run_instruction;
 mod instruction;
 mod process;
 mod parser;

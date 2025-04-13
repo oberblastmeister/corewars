@@ -39,7 +39,8 @@ impl Game {
                     Position::A => intermediate_instruction.a.data,
                     Position::B => intermediate_instruction.b.data,
                 };
-                let result_instruction_index = intermediate_instruction_index.wrapping_add_signed(result_instruction_offset);
+                let result_instruction_index =
+                    intermediate_instruction_index.wrapping_add_signed(result_instruction_offset);
                 let result_instruction = self.memory[result_instruction_index];
                 if change.pre_post == PrePost::Post {
                     // self.memory[intermediate_instruction_index] += change.kind.to_offset();
@@ -50,10 +51,10 @@ impl Game {
         }
     }
 
-    fn exec_instruction(&mut self, instruction: Instruction, ip: &mut usize) -> Option<()> {
+    fn run_instruction(&mut self, instruction: Instruction) -> Option<()> {
         use Op::*;
 
-        let instruction_index = *ip;
+        let instruction_index = *self.get_current_ip();
         let (a_instruction, a_instruction_index) =
             self.eval_operand(instruction_index, instruction.a);
         let (b_instruction, b_instruction_index) =
@@ -76,6 +77,7 @@ impl Game {
                         self.memory[b_instruction_index] = a_instruction;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Add => {
                 use Modifier::*;
@@ -101,6 +103,7 @@ impl Game {
                         self.memory[b_instruction_index].b.data += a_instruction.a.data;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Sub => {
                 use Modifier::*;
@@ -126,6 +129,7 @@ impl Game {
                         self.memory[b_instruction_index].b.data -= a_instruction.a.data;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Mul => {
                 use Modifier::*;
@@ -151,6 +155,7 @@ impl Game {
                         self.memory[b_instruction_index].b.data *= a_instruction.a.data;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Div => {
                 use Modifier::*;
@@ -176,6 +181,7 @@ impl Game {
                         self.memory[b_instruction_index].b.data /= a_instruction.a.data;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Mod => {
                 use Modifier::*;
@@ -201,12 +207,13 @@ impl Game {
                         self.memory[b_instruction_index].b.data %= a_instruction.a.data;
                     }
                 };
+                *self.get_current_ip() += 1;
             }
             Jmp => {
-                *ip = a_instruction_index;
+                *self.get_current_ip() = a_instruction_index;
             }
             Jmz => {
-                // let b = match
+                todo!()
             }
             Jmn => todo!(),
             Djn => todo!(),
@@ -222,15 +229,25 @@ impl Game {
         Some(())
     }
 
-    pub fn execute_one_cycle(&mut self) {
-        let curr_player = &mut self.players.curr_player;
-        let curr_process = &mut self.players.players[*curr_player].curr_process;
-        // let ip = &mut self.players.players[*curr_player].processes[*curr_process];
-        let ip = todo!();
-        // let instruction = self.memory[ip];
-        let instruction = todo!("Implement Jmn instruction");
-        *curr_process += 1;
-        *curr_player += 1;
-        self.exec_instruction(instruction, ip);
+    pub fn get_current_player(&mut self) -> &mut usize {
+        &mut self.players.curr_player
+    }
+    pub fn get_current_process(&mut self) -> &mut usize {
+        let curr_player = self.players.curr_player;
+        &mut self.players.players[curr_player].curr_process
+    }
+
+    pub fn get_current_ip(&mut self) -> &mut usize {
+        let curr_player = self.players.curr_player;
+        let curr_process = *self.get_current_process();
+        &mut self.players.players[curr_player].processes[curr_process]
+    }
+
+    pub fn run_cycle(&mut self) {
+        let ip = *self.get_current_ip();
+        let instruction = self.memory[ip];
+        self.run_instruction(instruction);
+        *self.get_current_process() += 1;
+        *self.get_current_player() += 1;
     }
 }
