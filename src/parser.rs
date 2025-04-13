@@ -29,8 +29,7 @@ pub fn parse_operand(s: &str) -> Operand {
     use AddressingMode::*;
 
     let mut chars = s.chars();
-    // let mode_char = chars.next()?; // Get the addressing mode character
-    let mode_char: char = todo!();
+    let mode_char = chars.next().unwrap(); // Get the addressing mode character
 
     // Default addressing mode is Direct if no symbol (e.g. "10")
     let (addressing_mode, rest): (AddressingMode, String) = match mode_char {
@@ -101,8 +100,7 @@ pub fn parse_operand(s: &str) -> Operand {
         _ => (true, &rest[..]),
     };
 
-    // let data = number_str.parse::<isize>().ok()?;
-    let data = todo!();
+    let data = number_str.parse::<isize>().ok().unwrap();
 
     Operand {
         addressing_mode,
