@@ -1,3 +1,8 @@
+mod exec_instruction;
+mod instruction;
+mod process;
+mod parser;
+
 use eframe::egui;
 use egui::{Color32, Pos2, Rect, Ui};
 

@@ -1,0 +1,182 @@
+use crate::instruction::*;
+
+pub fn parse_optcode(s: &str) -> Op {
+    match s.to_uppercase().as_str() {
+        "DAT" => Op::Dat,
+        "MOV" => Op::Mov,
+        "ADD" => Op::Add,
+        "SUB" => Op::Sub,
+        "MUL" => Op::Mul,
+        "DIV" => Op::Div,
+        "MOD" => Op::Mod,
+        "JMP" => Op::Jmp,
+        "JMZ" => Op::Jmz,
+        "JMN" => Op::Jmn,
+        "DJN" => Op::Djn,
+        "SPL" => Op::Spl,
+        "CMP" => Op::Cmp,
+        "SEQ" => Op::Seq,
+        "SNE" => Op::Sne,
+        "SLT" => Op::Slt,
+        "LDP" => Op::Ldp,
+        "STP" => Op::Stp,
+        "NOP" => Op::Nop,
+        _ => panic!("Invalid opcode: {}", s),
+    }
+}
+
+pub fn parse_operand(s: &str) -> Operand {
+    use AddressingMode::*;
+
+    let mut chars = s.chars();
+    // let mode_char = chars.next()?; // Get the addressing mode character
+    let mode_char: char = todo!();
+
+    // Default addressing mode is Direct if no symbol (e.g. "10")
+    let (addressing_mode, rest): (AddressingMode, String) = match mode_char {
+        '#' => (Immediate, chars.collect()),
+        '$' => (Direct, chars.collect()),
+        '*' => (
+            Indirect {
+                position: Position::A,
+                change: None,
+            },
+            chars.collect(),
+        ),
+        '@' => (
+            Indirect {
+                position: Position::B,
+                change: None,
+            },
+            chars.collect(),
+        ),
+        '{' => (
+            Indirect {
+                position: Position::A,
+                change: Some(IndirectModify {
+                    kind: IndirectModifyKind::Decrement,
+                    pre_post: PrePost::Pre,
+                }),
+            },
+            chars.collect(),
+        ),
+        '<' => (
+            Indirect {
+                position: Position::B,
+                change: Some(IndirectModify {
+                    kind: IndirectModifyKind::Decrement,
+                    pre_post: PrePost::Pre,
+                }),
+            },
+            chars.collect(),
+        ),
+        '}' => (
+            Indirect {
+                position: Position::A,
+                change: Some(IndirectModify {
+                    kind: IndirectModifyKind::Increment,
+                    pre_post: PrePost::Post,
+                }),
+            },
+            chars.collect(),
+        ),
+        '>' => (
+            Indirect {
+                position: Position::B,
+                change: Some(IndirectModify {
+                    kind: IndirectModifyKind::Increment,
+                    pre_post: PrePost::Post,
+                }),
+            },
+            chars.collect(),
+        ),
+        // If no symbol, it's a direct addressing and mode_char is part of the number
+        '0'..='9' | '+' | '-' => (Direct, std::iter::once(mode_char).chain(chars).collect()),
+        _ => return todo!(),
+    };
+
+    let (sign, number_str) = match rest.chars().next() {
+        Some('+') => (true, &rest[1..]),
+        Some('-') => (false, &rest[1..]),
+        _ => (true, &rest[..]),
+    };
+
+    // let data = number_str.parse::<isize>().ok()?;
+    let data = todo!();
+
+    Operand {
+        addressing_mode,
+        sign,
+        data,
+    }
+}
+
+pub fn parse_mod(s: &str) -> Modifier {
+    match s.to_uppercase().as_str() {
+        "A" => Modifier::A,
+        "B" => Modifier::B,
+        "AB" => Modifier::AB,
+        "BA" => Modifier::BA,
+        "F" => Modifier::F,
+        "X" => Modifier::X,
+        "I" => Modifier::I,
+        _ => panic!("Invalid modifier: {}", s),
+    }
+}
+
+pub fn parse_instruction(line: &str) -> Option<Instruction> {
+    let parts: Vec<&str> = line
+        .split(|c| c == ' ' || c == ',')
+        .filter(|s| !s.trim().is_empty())
+        .collect();
+
+    if parts.is_empty() {
+        return None;
+    }
+
+    // parse the
+
+    let opsplit = parts[0].split(".").collect::<Vec<&str>>();
+
+    let op = parse_optcode(opsplit[0]);
+
+    let mut modifier: Modifier = todo!();
+
+    if opsplit.len() == 2 {
+        modifier = parse_mod(opsplit[1]);
+    } else {
+        match op {
+            Op::Dat => modifier = Modifier::F,
+            Op::Mov => modifier = Modifier::I,
+            Op::Add => modifier = Modifier::AB,
+            Op::Sub => modifier = Modifier::AB,
+            Op::Mul => modifier = Modifier::AB,
+            Op::Div => modifier = Modifier::AB,
+            Op::Mod => modifier = Modifier::AB,
+            Op::Jmp => modifier = Modifier::B,
+            Op::Jmz => modifier = Modifier::B,
+            Op::Jmn => modifier = Modifier::B,
+            Op::Djn => modifier = Modifier::B,
+            Op::Spl => modifier = Modifier::B,
+            Op::Cmp => {
+                // Handle CMP
+            }
+            Op::Seq => modifier = Modifier::I,
+            Op::Sne => modifier = Modifier::I,
+            Op::Slt => modifier = Modifier::B,
+            Op::Ldp => {
+                // Handle LDP
+            }
+            Op::Stp => {
+                // Handle STP
+            }
+            Op::Nop => modifier = Modifier::F,
+        }
+    }
+
+    // parse operands a, b
+    let a = parse_operand(parts[1]);
+    let b = parse_operand(parts[2]);
+
+    return Some(Instruction { modifier, op, a, b });
+}
