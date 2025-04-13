@@ -36,10 +36,12 @@ impl Game {
                 if change == IndirectModify::Decrement {
                     match position {
                         Position::A => {
-                            self.memory[intermediate_instruction_index].a.data -= 1;
+                            let p = &mut self.memory[intermediate_instruction_index].a.data;
+                            *p = p.wrapping_sub(1);
                         }
                         Position::B => {
-                            self.memory[intermediate_instruction_index].b.data -= 1;
+                            let p = &mut self.memory[intermediate_instruction_index].b.data;
+                            *p = p.wrapping_sub(1);
                         }
                     }
                 }
@@ -55,7 +57,8 @@ impl Game {
                     // self.memory[intermediate_instruction_index] += change.kind.to_offset();
                     match position {
                         Position::A => {
-                            self.memory[intermediate_instruction_index].a.data += 1;
+                            let p = &mut self.memory[intermediate_instruction_index].a.data;
+                            *p += 1;
                         }
                         Position::B => {
                             self.memory[intermediate_instruction_index].b.data += 1;
