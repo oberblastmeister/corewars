@@ -22,8 +22,8 @@ pub enum VisualizationKind {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Visualization {
-    player: usize,
-    kind: VisualizationKind,
+    pub player: usize,
+    pub kind: VisualizationKind,
 }
 
 pub struct Game {
@@ -96,5 +96,9 @@ impl Game {
 
             players.push(new_player);
         }
+        self.players = Players {
+            players,
+            curr_player: 0,
+        };
     }
 }

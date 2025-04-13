@@ -1,4 +1,7 @@
-use crate::{instruction::*, process::Game};
+use crate::{
+    instruction::*,
+    process::{Game, VisualizationKind},
+};
 
 impl Game {
     fn eval_operand(&mut self, instruction_index: usize, operand: Operand) -> (Instruction, usize) {
@@ -31,8 +34,14 @@ impl Game {
                 let intermediate_instruction_index =
                     instruction_index.wrapping_add_signed(operand.data);
                 if change == IndirectModify::Decrement {
-                    // self.memory[intermediate_instruction_index] += change.kind.to_offset();
-                    todo!()
+                    match position {
+                        Position::A => {
+                            self.memory[intermediate_instruction_index].a.data -= 1;
+                        }
+                        Position::B => {
+                            self.memory[intermediate_instruction_index].b.data -= 1;
+                        }
+                    }
                 }
                 let intermediate_instruction = self.memory[intermediate_instruction_index];
                 let result_instruction_offset = match position {
@@ -44,9 +53,16 @@ impl Game {
                 let result_instruction = self.memory[result_instruction_index];
                 if change == IndirectModify::Increment {
                     // self.memory[intermediate_instruction_index] += change.kind.to_offset();
-                    todo!()
+                    match position {
+                        Position::A => {
+                            self.memory[intermediate_instruction_index].a.data += 1;
+                        }
+                        Position::B => {
+                            self.memory[intermediate_instruction_index].b.data += 1;
+                        }
+                    }
                 }
-                todo!()
+                (result_instruction, result_instruction_index)
             }
         }
     }
@@ -232,6 +248,7 @@ impl Game {
     pub fn get_current_player(&mut self) -> &mut usize {
         &mut self.players.curr_player
     }
+
     pub fn get_current_process(&mut self) -> &mut usize {
         let curr_player = self.players.curr_player;
         &mut self.players.players[curr_player].curr_process
@@ -244,10 +261,20 @@ impl Game {
     }
 
     pub fn run_cycle(&mut self) {
+        dbg!(*self.get_current_process());
         let ip = *self.get_current_ip();
+        let player = *self.get_current_player();
         let instruction = self.memory[ip];
+        self.visualization[ip] = Some(crate::process::Visualization {
+            player,
+            kind: VisualizationKind::Execute,
+        });
         self.run_instruction(instruction);
         *self.get_current_process() += 1;
+        *self.get_current_process() %= self.players.players[self.players.curr_player]
+            .processes
+            .len();
         *self.get_current_player() += 1;
+        *self.get_current_player() %= self.players.players.len();
     }
 }

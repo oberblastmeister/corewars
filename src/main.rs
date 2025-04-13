@@ -90,37 +90,24 @@ fn main() {
             // This gives us image support:
             // egui_extras::install_image_loaders(&cc.egui_ctx);
 
-            // let result = parse_file("erm.s");
+            let result = parse_file("erm.s");
 
-            // for r in result {
-            //     println!("{}", r);
-            // }
+            for r in result {
+                println!("{}", r);
+            }
 
-            // let c1 = vec![parse_instruction("jmp 0 <-1").unwrap()];
-            // let c0 = vec![parse_instruction("mov 0 1").unwrap()];
+            let c4 = vec![parse_instruction("mov 0 1").unwrap()];
+            let c3 = vec![parse_instruction("mov 0 1").unwrap()];
+            let c2 = vec![parse_instruction("mov 0 1").unwrap()];
+            let c1 = vec![parse_instruction("mov 0 1").unwrap()];
+            let c0 = vec![parse_instruction("mov 0 1").unwrap()];
 
-            // let mut g = Game::new(2, 100);
+            let mut game = Game::new(2, 100);
 
-            // g.start_game(vec![c0, c1]);
+            game.start_game(vec![c0, c1, c2, c3, c4]);
 
-            // g.debug_print_memory();
+            game.debug_print_memory();
 
-            //     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
-            //     let options = eframe::NativeOptions {
-            //         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
-            //         ..Default::default()
-            //     };
-            //     eframe::run_native(
-            //         "My egui App",
-            //         options,
-            //         Box::new(|cc| {
-            //             // This gives us image support:
-            //             // egui_extras::install_image_loaders(&cc.egui_ctx);
-            //
-            //             Ok(Box::<MyApp>::default())
-            //         }),
-            //     )
-            let game = Game::new(1, 1 << 32);
             Ok(Box::new(game))
         }),
     );
@@ -133,5 +120,7 @@ impl eframe::App for Game {
 
             self.draw(ui);
         });
+        
+        self.run_cycle();
     }
 }
