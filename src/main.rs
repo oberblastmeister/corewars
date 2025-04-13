@@ -5,7 +5,7 @@ mod run_instruction;
 
 use eframe::egui;
 use egui::{Color32, Pos2, Rect, Ui};
-use parser::parse_instruction;
+use parser::parse_file;
 
 pub struct Board {
     // true = white, false = black
@@ -63,7 +63,10 @@ impl Board {
 fn main() {
     // -> eframe::Result {
 
-    println!("{:?}", parse_instruction("jmp 0 <-1"));
+    let result = parse_file("erm.s");
+    for r in result {
+        println!("{:?}", r);
+    }
     //     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     //     let options = eframe::NativeOptions {
     //         viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),

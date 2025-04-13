@@ -1,4 +1,10 @@
 use crate::instruction::*;
+use std::{
+    fs::File,
+    io::{prelude::*, BufReader},
+    path::Path,
+};
+use std::fs::read_to_string;
 
 pub fn parse_optcode(s: &str) -> Op {
     match s.to_uppercase().as_str() {
@@ -177,4 +183,30 @@ pub fn parse_instruction(line: &str) -> Option<Instruction> {
     let b = parse_operand(parts[2]);
 
     return Some(Instruction { modifier, op, a, b });
+}
+
+
+pub fn parse_file(filename: &str) -> Vec<Instruction>{
+
+    let file = File::open(filename).expect("Failed to open file");
+    let reader = BufReader::new(file);
+
+    let m:Vec<String> = reader
+        .lines()
+        .map(|line| line.expect("Failed to read line"))
+        .collect();
+
+    let mut instructions = vec![];
+    for line in m {
+        match parse_instruction(line.as_str()) {
+            Some(x) => {
+                instructions.push(x)
+            },
+            None => {
+                return vec![];
+            }
+        }
+    }
+
+    return instructions;
 }
